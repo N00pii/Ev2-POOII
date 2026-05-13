@@ -15,6 +15,12 @@ PASOS A SEGUIR:
 
 Luego visita: http://127.0.0.1:8000
 
+----------------------------------------------------------------------------------------------
+IMPORTANTE, para entrar a la cuenta de administrador se escriben las siguientes credenciales:
+Usuario      : admin  
+Contraseña   : admin1234
+----------------------------------------------------------------------------------------------
+
 
 RECORDATORIO PARA GITHUB
 ```bash
