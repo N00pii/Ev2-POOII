@@ -1,0 +1,32 @@
+﻿{% extends 'tienda/base.html' %}
+{% block titulo %}Ingresar — Games Addiction{% endblock %}
+
+{% block contenido %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1 class="auth-titulo">Ingresar</h1>
+    <p class="auth-sub">Accede a tu cuenta de Games Addiction</p>
+
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          {% for error in field.errors %}
+            <p class="form-error">{{ error }}</p>
+          {% endfor %}
+        {% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" id="btn-login" class="btn btn-primary btn-full">Ingresar</button>
+    </form>
+
+    <p style="text-align:center; margin-top:1.4rem; color:var(--texto2); font-size:0.88rem;">
+      ¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate aquí</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
+

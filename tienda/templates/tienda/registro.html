@@ -1,0 +1,35 @@
+﻿{% extends 'tienda/base.html' %}
+{% block titulo %}Registro — Games Addiction{% endblock %}
+
+{% block contenido %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1 class="auth-titulo">Crear cuenta</h1>
+    <p class="auth-sub">Únete a la comunidad Games Addiction</p>
+
+    <form method="post" action="{% url 'registro' %}">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <p class="form-help">{{ field.help_text }}</p>
+        {% endif %}
+        {% if field.errors %}
+          {% for error in field.errors %}
+            <p class="form-error">{{ error }}</p>
+          {% endfor %}
+        {% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" id="btn-registro" class="btn btn-primary btn-full">Crear cuenta</button>
+    </form>
+
+    <p style="text-align:center; margin-top:1.4rem; color:var(--texto2); font-size:0.88rem;">
+      ¿Ya tienes cuenta? <a href="{% url 'login' %}">Ingresar</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
+

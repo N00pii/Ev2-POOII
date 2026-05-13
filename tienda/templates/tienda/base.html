@@ -1,0 +1,63 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block meta_desc %}Games Addiction — Tienda especializada en videojuegos, figuras de colección y merchandising gamer.{% endblock %}">
+  <title>{% block titulo %}Games Addiction{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="{% url 'inicio' %}" class="nav-logo">Games<span>Addiction</span></a>
+      <button class="hamburger" id="hamburger" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="{% url 'inicio' %}"   {% if request.resolver_match.url_name == 'inicio'   %}class="activo"{% endif %}>Inicio</a></li>
+        <li><a href="{% url 'catalogo' %}" {% if request.resolver_match.url_name == 'catalogo' %}class="activo"{% endif %}>Catálogo</a></li>
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'perfil' %}" {% if request.resolver_match.url_name == 'perfil' %}class="activo"{% endif %}>Mi cuenta</a></li>
+          <li>
+            <form method="post" action="{% url 'logout' %}" style="display:inline">
+              {% csrf_token %}
+              <button type="submit" class="btn-nav">Cerrar sesión</button>
+            </form>
+          </li>
+        {% else %}
+          <li><a href="{% url 'login' %}"   {% if request.resolver_match.url_name == 'login'   %}class="activo"{% endif %}>Ingresar</a></li>
+          <li><a href="{% url 'registro' %}" class="btn-nav">Registrarse</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  {% if messages %}
+  <div class="mensajes">
+    {% for msg in messages %}
+      <div class="mensaje
+        {% if msg.tags == 'success' %}mensaje-success
+        {% elif msg.tags == 'error' %}mensaje-error
+        {% else %}mensaje-info{% endif %}">
+        {{ msg }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <main>{% block contenido %}{% endblock %}</main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">Games<span>Addiction</span></div>
+      <p class="footer-copy">© 2026 Games Addiction. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
+

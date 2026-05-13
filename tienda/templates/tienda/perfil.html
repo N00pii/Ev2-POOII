@@ -1,0 +1,70 @@
+﻿{% extends 'tienda/base.html' %}
+{% load static %}
+{% block titulo %}Perfil — Games Addiction{% endblock %}
+
+{% block contenido %}
+<div class="perfil-header">
+  <div class="perfil-header-inner">
+    <div class="avatar">
+      {% if user.first_name %}{{ user.first_name|first|upper }}{% else %}{{ user.username|first|upper }}{% endif %}
+    </div>
+    <div>
+      <h1 class="perfil-nombre">
+        {% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}
+      </h1>
+      <p class="perfil-email">{{ user.username }} — {{ user.email }}</p>
+      <p style="color:var(--texto2); font-size:0.8rem; margin-top:3px;">
+        Miembro desde {{ user.date_joined|date:"F Y" }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="seccion">
+  <h2 class="seccion-titulo">Resumen</h2>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num">{{ total_productos }}</div>
+      <div class="stat-label">Productos en tienda</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ categorias|length }}</div>
+      <div class="stat-label">Categorías</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">Activa</div>
+      <div class="stat-label">Estado de cuenta</div>
+    </div>
+  </div>
+
+  <div style="margin-top:3rem;">
+    <h2 class="seccion-titulo">Categorías disponibles</h2>
+    <p class="seccion-sub" style="margin-bottom:1.2rem;">Navega directamente a la sección que te interesa</p>
+    <ul class="lista-cats">
+      {% for cat in categorias %}
+      <li>
+        {# IMAGEN: reemplaza este bloque por <img src="{% static 'img/'|add:cat.imagen %}" alt="{{ cat.nombre }}" class="cat-thumb"> #}
+        <div class="img-placeholder" style="width:48px; height:36px; border-radius:4px; font-size:0; flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        </div>
+        <div>
+          <strong style="color:var(--texto); font-size:0.9rem;">{{ cat.nombre }}</strong>
+          {% if cat.descripcion %}
+            <br><span style="font-size:0.8rem;">{{ cat.descripcion }}</span>
+          {% endif %}
+        </div>
+        <a href="{% url 'catalogo' %}?categoria={{ cat.id }}" class="btn btn-outline btn-sm" style="margin-left:auto;">Ver</a>
+      </li>
+      {% empty %}
+      <li>No hay categorías registradas.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div style="margin-top:2.5rem; display:flex; gap:0.8rem; flex-wrap:wrap;">
+    <a href="{% url 'catalogo' %}" class="btn btn-primary">Ir al catálogo</a>
+    <a href="{% url 'inicio' %}" class="btn btn-outline">Volver al inicio</a>
+  </div>
+</div>
+{% endblock %}
+
