@@ -1,25 +1,27 @@
 Tienda freak online de videojuegos, figuras de colección y merchandising gamer.
 
-python -m venv .venv
+PASOS A SEGUIR:
 
-.venv/Scripts/activate       
+1- python -m venv .venv
 
-pip install django
+2- .venv/Scripts/activate       
 
-python manage.py migrate
+3- pip install django
 
-python manage.py runserver
+4- python manage.py migrate
+
+5- python manage.py runserver
 
 
 Luego visita: http://127.0.0.1:8000
 
 
-
+RECORDATORIO PARA GITHUB
 ```bash
 git init
 git add .
-git commit -m "feat: proyecto inicial Games Addiction"
-git remote add origin <URL>
+git commit -m "nombre del commit"
+git remote add origin 'URL'
 git push -u origin main
 ```
 En los templates hay partes que si uno las borra se corrompen las imágenes
