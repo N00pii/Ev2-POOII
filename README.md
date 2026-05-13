@@ -9,7 +9,7 @@ pip install django
 python manage.py migrate
 
 python manage.py runserver
-```
+
 
 Luego visita: http://127.0.0.1:8000
 
@@ -22,3 +22,4 @@ git commit -m "feat: proyecto inicial Games Addiction"
 git remote add origin <URL>
 git push -u origin main
 ```
+En los templates hay partes que si uno las borra se corrompen las imágenes
