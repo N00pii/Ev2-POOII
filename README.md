@@ -1,4 +1,4 @@
-Tienda freak online de videojuegos, figuras de colección y merchandising gamer. Proyecto Django para la asignatura de Desarrollo Web.
+Tienda freak online de videojuegos, figuras de colección y merchandising gamer.
 
 python -m venv .venv
 
