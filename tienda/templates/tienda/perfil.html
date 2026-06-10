@@ -1,70 +1,207 @@
-﻿{% extends 'tienda/base.html' %}
+{% extends 'tienda/base.html' %}
 {% load static %}
-{% block titulo %}Perfil — Games Addiction{% endblock %}
+{% block titulo %}Mi Cuenta — Games Addiction{% endblock %}
 
 {% block contenido %}
-<div class="perfil-header">
-  <div class="perfil-header-inner">
-    <div class="avatar">
+<div class="perfil-header" style="background: var(--bg2); border-bottom: 1px solid var(--borde); padding: 2.5rem 1.5rem;">
+  <div class="perfil-header-inner" style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 1.2rem;">
+    <div class="avatar" style="width: 64px; height: 64px; border-radius: 50%; background: var(--acento); display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; font-size: 1.6rem; font-weight: 700; color: #fff; flex-shrink: 0;">
       {% if user.first_name %}{{ user.first_name|first|upper }}{% else %}{{ user.username|first|upper }}{% endif %}
     </div>
     <div>
-      <h1 class="perfil-nombre">
+      <h1 class="perfil-nombre" style="font-family: 'Barlow', sans-serif; font-size: 1.5rem; font-weight: 700;">
         {% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}
       </h1>
-      <p class="perfil-email">{{ user.username }} — {{ user.email }}</p>
+      <p class="perfil-email" style="color: var(--texto2); font-size: 0.85rem; margin-top: 2px;">
+        {{ user.email }} — {% if es_admin %}Administrador{% else %}Cliente{% endif %}
+      </p>
       <p style="color:var(--texto2); font-size:0.8rem; margin-top:3px;">
-        Miembro desde {{ user.date_joined|date:"F Y" }}
+        Miembro desde {{ user.date_joined|date:"d M Y" }}
       </p>
     </div>
   </div>
 </div>
 
-<div class="seccion">
-  <h2 class="seccion-titulo">Resumen</h2>
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-num">{{ total_productos }}</div>
-      <div class="stat-label">Productos en tienda</div>
+<div class="seccion" style="padding: 3rem 1.5rem; max-width: 1200px; margin: 0 auto;">
+  
+  {% if es_admin %}
+    <!-- ── VISTA DE ADMINISTRADOR ── -->
+    
+    <!-- Estadísticas -->
+    <h2 class="seccion-titulo" style="font-family: 'Barlow', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.2rem;">Estadísticas del Negocio</h2>
+    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 3rem;">
+      <div class="stat-card" style="background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--radius); padding: 1.2rem;">
+        <div class="stat-num" style="font-family: 'Barlow', sans-serif; font-size: 2rem; font-weight: 700; color: var(--texto);">{{ total_productos }}</div>
+        <div class="stat-label" style="color: var(--texto2); font-size: 0.8rem; margin-top: 2px;">Productos en Catálogo</div>
+      </div>
+      <div class="stat-card" style="background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--radius); padding: 1.2rem;">
+        <div class="stat-num" style="font-family: 'Barlow', sans-serif; font-size: 2rem; font-weight: 700; color: var(--texto);">{{ categorias|length }}</div>
+        <div class="stat-label" style="color: var(--texto2); font-size: 0.8rem; margin-top: 2px;">Categorías Disponibles</div>
+      </div>
+      <div class="stat-card" style="background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--radius); padding: 1.2rem;">
+        <div class="stat-num" style="font-family: 'Barlow', sans-serif; font-size: 2rem; font-weight: 700; color: #27ae60;">Online</div>
+        <div class="stat-label" style="color: var(--texto2); font-size: 0.8rem; margin-top: 2px;">Estado del Servidor</div>
+      </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-num">{{ categorias|length }}</div>
-      <div class="stat-label">Categorías</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num">Activa</div>
-      <div class="stat-label">Estado de cuenta</div>
-    </div>
-  </div>
 
-  <div style="margin-top:3rem;">
-    <h2 class="seccion-titulo">Categorías disponibles</h2>
-    <p class="seccion-sub" style="margin-bottom:1.2rem;">Navega directamente a la sección que te interesa</p>
-    <ul class="lista-cats">
-      {% for cat in categorias %}
-      <li>
-        {# IMAGEN: reemplaza este bloque por <img src="{% static 'img/'|add:cat.imagen %}" alt="{{ cat.nombre }}" class="cat-thumb"> #}
-        <div class="img-placeholder" style="width:48px; height:36px; border-radius:4px; font-size:0; flex-shrink:0;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+    <!-- Gestión de Productos -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2 class="seccion-titulo" style="font-family: 'Barlow', sans-serif; font-size: 1.5rem; font-weight: 700; margin: 0;">Gestión de Productos</h2>
+        <p class="seccion-sub" style="color: var(--texto2); font-size: 0.85rem; margin-top: 2px;">Listado de productos disponibles en el sitio</p>
+      </div>
+      <a href="{% url 'crear_producto' %}" class="btn btn-primary" style="display: flex; align-items: center; gap: 6px; font-weight: 600; padding: 10px 18px;">
+        <span>➕</span> Agregar Producto
+      </a>
+    </div>
+
+    <!-- Tabla de Productos -->
+    <div style="overflow-x: auto; background: var(--bg2); border: 1px solid var(--borde); border-radius: var(--radius); margin-bottom: 3rem;">
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--borde); background: var(--bg3); color: var(--texto2);">
+            <th style="padding: 12px 16px;">Imagen</th>
+            <th style="padding: 12px 16px;">Nombre</th>
+            <th style="padding: 12px 16px;">Categoría</th>
+            <th style="padding: 12px 16px; text-align: right;">Precio</th>
+            <th style="padding: 12px 16px; text-align: center;">Stock</th>
+            <th style="padding: 12px 16px; text-align: center;">Destacado</th>
+            <th style="padding: 12px 16px; text-align: center;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for prod in productos %}
+          <tr style="border-bottom: 1px solid var(--borde); transition: background 0.2s;">
+            <td style="padding: 12px 16px;">
+              <img src="{{ prod.imagen_url }}" alt="{{ prod.nombre }}" style="width: 44px; height: 44px; object-fit: cover; border-radius: 4px; background: var(--bg3);">
+            </td>
+            <td style="padding: 12px 16px; font-weight: 600; color: var(--texto);">
+              <a href="{% url 'detalle_producto' prod.pk %}" style="color: var(--texto);">{{ prod.nombre }}</a>
+            </td>
+            <td style="padding: 12px 16px; color: var(--texto2);">{{ prod.categoria.nombre }}</td>
+            <td style="padding: 12px 16px; text-align: right; font-weight: bold; color: var(--texto);">${{ prod.precio|floatformat:0 }}</td>
+            <td style="padding: 12px 16px; text-align: center;">
+              {% if prod.stock > 5 %}
+                <span style="color: #27ae60; font-weight: 600;">{{ prod.stock }}</span>
+              {% elif prod.stock > 0 %}
+                <span style="color: #f39c12; font-weight: 600;">{{ prod.stock }} (bajo)</span>
+              {% else %}
+                <span style="color: var(--acento); font-weight: 600;">Sin stock</span>
+              {% endif %}
+            </td>
+            <td style="padding: 12px 16px; text-align: center; color: var(--texto2);">
+              {% if prod.destacado %}⭐ Sí{% else %}No{% endif %}
+            </td>
+            <td style="padding: 12px 16px; text-align: center;">
+              <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                <a href="{% url 'editar_producto' prod.pk %}" class="btn btn-outline btn-sm" style="padding: 4px 10px; font-size: 0.76rem; border-color: #f39c12; color: #f39c12;">Editar</a>
+                <a href="{% url 'eliminar_producto' prod.pk %}" class="btn btn-outline btn-sm" style="padding: 4px 10px; font-size: 0.76rem; border-color: var(--acento); color: var(--acento);">Eliminar</a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" style="padding: 24px; text-align: center; color: var(--texto2);">No hay productos registrados en la tienda.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  {% else %}
+    <!-- ── VISTA DE USUARIO CLIENTE ── -->
+
+    <!-- Estadísticas usuario -->
+    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 3rem;">
+      <div class="stat-card" style="background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--radius); padding: 1.2rem;">
+        <div class="stat-num" style="font-family: 'Barlow', sans-serif; font-size: 2rem; font-weight: 700; color: var(--texto);">{{ pedidos|length }}</div>
+        <div class="stat-label" style="color: var(--texto2); font-size: 0.8rem; margin-top: 2px;">Compras Realizadas</div>
+      </div>
+      <div class="stat-card" style="background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--radius); padding: 1.2rem;">
+        <div class="stat-num" style="font-family: 'Barlow', sans-serif; font-size: 2rem; font-weight: 700; color: var(--texto);">{{ deseados|length }}</div>
+        <div class="stat-label" style="color: var(--texto2); font-size: 0.8rem; margin-top: 2px;">Productos en Deseados</div>
+      </div>
+      <div class="stat-card" style="background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--radius); padding: 1.2rem;">
+        <div class="stat-num" style="font-family: 'Barlow', sans-serif; font-size: 2rem; font-weight: 700; color: #27ae60;">Activa</div>
+        <div class="stat-label" style="color: var(--texto2); font-size: 0.8rem; margin-top: 2px;">Estado de la Cuenta</div>
+      </div>
+    </div>
+
+    <!-- Historial de compras -->
+    <h2 class="seccion-titulo" style="font-family: 'Barlow', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.2rem;">Mis Compras</h2>
+    <p class="seccion-sub" style="color: var(--texto2); font-size: 0.85rem; margin-bottom: 1.5rem;">Registro histórico de tus pedidos en Games Addiction</p>
+    
+    <div style="background: var(--bg2); border: 1px solid var(--borde); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 3rem; display: flex; flex-direction: column; gap: 1.5rem;">
+      {% for pedido in pedidos %}
+        <div style="border: 1px solid var(--borde); border-radius: 6px; overflow: hidden;">
+          <div style="background: var(--bg3); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borde); flex-wrap: wrap; gap: 0.8rem;">
+            <div style="font-size: 0.85rem;">
+              <span style="font-weight: bold; color: var(--texto);">Pedido #{{ pedido.id }}</span> 
+              <span style="color: var(--texto2); margin-left: 10px;">{{ pedido.fecha|date:"d M Y, H:i" }}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="background: rgba(39,174,96,0.1); border: 1px solid #27ae60; color: #27ae60; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">{{ pedido.get_estado_display }}</span>
+              <strong style="font-family: 'Barlow', sans-serif; font-size: 1.1rem; color: var(--texto);">${{ pedido.total|floatformat:0 }}</strong>
+            </div>
+          </div>
+          <div style="padding: 12px 16px; background: var(--bg2);">
+            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+              {% for item in pedido.items.all %}
+                <li style="display: flex; justify-content: space-between; font-size: 0.88rem; align-items: center;">
+                  <span style="color: var(--texto);">
+                    {% if item.producto %}
+                      <a href="{% url 'detalle_producto' item.producto.pk %}" style="color: var(--texto);">{{ item.nombre_producto }}</a>
+                    {% else %}
+                      {{ item.nombre_producto }}
+                    {% endif %}
+                    <span style="color: var(--texto2); font-size: 0.8rem; margin-left: 5px;">x {{ item.cantidad }}</span>
+                  </span>
+                  <span style="color: var(--texto2); font-family: 'Barlow', sans-serif;">${{ item.subtotal|floatformat:0 }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
-        <div>
-          <strong style="color:var(--texto); font-size:0.9rem;">{{ cat.nombre }}</strong>
-          {% if cat.descripcion %}
-            <br><span style="font-size:0.8rem;">{{ cat.descripcion }}</span>
-          {% endif %}
-        </div>
-        <a href="{% url 'catalogo' %}?categoria={{ cat.id }}" class="btn btn-outline btn-sm" style="margin-left:auto;">Ver</a>
-      </li>
       {% empty %}
-      <li>No hay categorías registradas.</li>
+        <div style="text-align: center; padding: 2rem 1rem; color: var(--texto2);">
+          No has realizado ninguna compra todavía. ¡Ve a nuestro <a href="{% url 'catalogo' %}" style="color: var(--acento); text-decoration: underline;">catálogo</a> para empezar!
+        </div>
       {% endfor %}
-    </ul>
-  </div>
+    </div>
 
-  <div style="margin-top:2.5rem; display:flex; gap:0.8rem; flex-wrap:wrap;">
+    <!-- Lista de deseados -->
+    <h2 class="seccion-titulo" style="font-family: 'Barlow', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.2rem;">Mi Lista de Deseados</h2>
+    <p class="seccion-sub" style="color: var(--texto2); font-size: 0.85rem; margin-bottom: 1.5rem;">Productos que tienes en la mira</p>
+
+    <div class="grid-productos" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem; margin-bottom: 2rem;">
+      {% for deseado in deseados %}
+        <div class="card-producto" style="position: relative;">
+          <a href="{% url 'detalle_producto' deseado.producto.pk %}" style="text-decoration:none; color:inherit;">
+            <img src="{{ deseado.producto.imagen_url }}" alt="{{ deseado.producto.nombre }}" class="card-img">
+            <div class="card-body">
+              <div class="card-cat-label">{{ deseado.producto.categoria.nombre }}</div>
+              <div class="card-nombre">{{ deseado.producto.nombre }}</div>
+              <div class="card-precio">${{ deseado.producto.precio|floatformat:0 }}</div>
+            </div>
+          </a>
+          <form method="post" action="{% url 'toggle_deseado' deseado.producto.pk %}" style="position: absolute; top: 8px; right: 8px; z-index: 5;">
+            {% csrf_token %}
+            <button type="submit" style="background: rgba(17,17,19,0.7); border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--acento); font-size: 0.95rem;" title="Quitar de deseados">❤️</button>
+          </form>
+        </div>
+      {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2rem 1rem; color: var(--texto2); border: 1px dashed var(--borde); border-radius: var(--radius); background: var(--bg2);">
+          No tienes productos en tu lista de deseados por ahora.
+        </div>
+      {% endfor %}
+    </div>
+
+  {% endif %}
+
+  <!-- Botones de salida -->
+  <div style="margin-top: 3rem; display:flex; gap:0.8rem; flex-wrap:wrap; border-top: 1px solid var(--borde); padding-top: 1.5rem;">
     <a href="{% url 'catalogo' %}" class="btn btn-primary">Ir al catálogo</a>
     <a href="{% url 'inicio' %}" class="btn btn-outline">Volver al inicio</a>
   </div>
 </div>
 {% endblock %}
-

@@ -1,0 +1,32 @@
+{% extends 'tienda/base.html' %}
+{% block titulo %}Eliminar Producto — Games Addiction{% endblock %}
+
+{% block contenido %}
+<div class="auth-wrap" style="min-height: calc(100vh - 120px); display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem;">
+  <div class="auth-card" style="background: var(--bg2); border: 1px solid var(--borde); border-radius: 10px; padding: 2.2rem; width: 100%; max-width: 480px; text-align: center;">
+    <h1 class="auth-titulo" style="font-family: 'Barlow', sans-serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 0.2rem; color: var(--acento);">¿Estás seguro?</h1>
+    <p class="auth-sub" style="color: var(--texto2); font-size: 0.85rem; margin-bottom: 1.8rem;">Esta acción no se puede deshacer.</p>
+
+    <div style="background: var(--bg3); border: 1px solid var(--borde); border-radius: var(--radius); padding: 1.2rem; margin-bottom: 1.8rem; text-align: left; display: flex; gap: 1rem; align-items: center;">
+      <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; background: var(--bg2);">
+      <div>
+        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.1rem; color: var(--texto);">{{ producto.nombre }}</h3>
+        <p style="color: var(--texto2); font-size: 0.8rem;">Categoría: {{ producto.categoria.nombre }}</p>
+        <p style="color: var(--texto2); font-size: 0.8rem;">Precio: ${{ producto.precio|floatformat:0 }}</p>
+      </div>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div style="display: flex; gap: 0.8rem;">
+        <button type="submit" class="btn btn-primary" style="flex: 1; background: var(--acento); height: 42px; display: flex; align-items: center; justify-content: center;">
+          Sí, eliminar producto
+        </button>
+        <a href="{% url 'perfil' %}" class="btn btn-outline" style="flex: 1; text-align: center; display: flex; align-items: center; justify-content: center; height: 42px;">
+          Cancelar
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from .models import Producto
 
 
 class RegistroForm(UserCreationForm):
@@ -37,3 +38,27 @@ class LoginForm(AuthenticationForm):
         self.fields['password'].widget.attrs.update({'class': 'form-input', 'placeholder': 'Contraseña'})
         self.fields['username'].label = 'Usuario'
         self.fields['password'].label = 'Contraseña'
+
+
+class ProductoForm(forms.ModelForm):
+    class Meta:
+        model = Producto
+        fields = ['nombre', 'descripcion', 'precio', 'imagen', 'categoria', 'destacado', 'stock']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Nombre del producto'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-input', 'rows': 4, 'placeholder': 'Descripción del producto'}),
+            'precio': forms.NumberInput(attrs={'class': 'form-input', 'min': 0, 'placeholder': 'Precio'}),
+            'imagen': forms.ClearableFileInput(attrs={'class': 'form-input'}),
+            'categoria': forms.Select(attrs={'class': 'form-input'}),
+            'destacado': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
+            'stock': forms.NumberInput(attrs={'class': 'form-input', 'min': 0, 'placeholder': 'Cantidad en stock'}),
+        }
+        labels = {
+            'nombre': 'Nombre',
+            'descripcion': 'Descripción',
+            'precio': 'Precio ($)',
+            'imagen': 'Imagen del Producto',
+            'categoria': 'Categoría',
+            'destacado': 'Destacado (Mostrar en inicio)',
+            'stock': 'Stock',
+        }

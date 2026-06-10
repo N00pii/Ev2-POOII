@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -17,8 +17,16 @@
         <span></span><span></span><span></span>
       </button>
       <ul class="nav-links" id="nav-links">
-        <li><a href="{% url 'inicio' %}"   {% if request.resolver_match.url_name == 'inicio'   %}class="activo"{% endif %}>Inicio</a></li>
+        <li><a href="{% url 'inicio' %}" {% if request.resolver_match.url_name == 'inicio' %}class="activo"{% endif %}>Inicio</a></li>
         <li><a href="{% url 'catalogo' %}" {% if request.resolver_match.url_name == 'catalogo' %}class="activo"{% endif %}>Catálogo</a></li>
+        <li>
+          <a href="{% url 'ver_carrito' %}" class="nav-cart {% if request.resolver_match.url_name == 'ver_carrito' %}activo{% endif %}">
+            🛒 Carrito
+            {% if carrito_cantidad > 0 %}
+              <span class="cart-badge">{{ carrito_cantidad }}</span>
+            {% endif %}
+          </a>
+        </li>
         {% if user.is_authenticated %}
           <li><a href="{% url 'perfil' %}" {% if request.resolver_match.url_name == 'perfil' %}class="activo"{% endif %}>Mi cuenta</a></li>
           <li>
@@ -28,7 +36,7 @@
             </form>
           </li>
         {% else %}
-          <li><a href="{% url 'login' %}"   {% if request.resolver_match.url_name == 'login'   %}class="activo"{% endif %}>Ingresar</a></li>
+          <li><a href="{% url 'login' %}" {% if request.resolver_match.url_name == 'login' %}class="activo"{% endif %}>Ingresar</a></li>
           <li><a href="{% url 'registro' %}" class="btn-nav">Registrarse</a></li>
         {% endif %}
       </ul>
@@ -60,4 +68,3 @@
   <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>
-

@@ -1,0 +1,97 @@
+{% extends 'tienda/base.html' %}
+{% load static %}
+{% block titulo %}Carrito de Compras — Games Addiction{% endblock %}
+
+{% block contenido %}
+<div class="seccion">
+  <h1 class="seccion-titulo">Tu Carrito</h1>
+  <p class="seccion-sub">Revisa tus artículos antes de realizar la compra</p>
+
+  {% if items %}
+  <div class="carrito-contenedor" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+    
+    <!-- DETALLES DE PRODUCTOS -->
+    <div class="carrito-detalles" style="background: var(--bg2); border: 1px solid var(--borde); border-radius: var(--radius); padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
+      {% for item in items %}
+      <div class="carrito-item" style="display: flex; gap: 1.2rem; align-items: center; border-bottom: 1px solid var(--borde); padding-bottom: 1.5rem; flex-wrap: wrap;">
+        <img src="{{ item.producto.imagen_url }}" alt="{{ item.producto.nombre }}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; background: var(--bg3);">
+        <div style="flex: 1; min-width: 150px;">
+          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.2rem;">
+            <a href="{% url 'detalle_producto' item.producto.pk %}" style="color: var(--texto); decoration: none;">{{ item.producto.nombre }}</a>
+          </h3>
+          <p style="color: var(--texto2); font-size: 0.82rem;">Categoría: {{ item.producto.categoria.nombre }}</p>
+          <p style="color: var(--texto2); font-size: 0.82rem;">Stock disponible: {{ item.producto.stock }}</p>
+        </div>
+        
+        <!-- Cantidad -->
+        <div>
+          <form method="post" action="{% url 'actualizar_carrito' item.producto.pk %}" style="display: flex; align-items: center; border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; background: var(--bg3); height: 34px;">
+            {% csrf_token %}
+            <button type="submit" onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="btn-cant" style="background: none; border: none; color: var(--texto2); width: 30px; height: 100%; cursor: pointer; font-weight: bold;">-</button>
+            <input type="number" name="cantidad" value="{{ item.cantidad }}" min="1" max="{{ item.producto.stock }}" onchange="this.form.submit()" style="width: 38px; text-align: center; background: none; border: none; color: var(--texto); height: 100%; font-weight: bold; outline: none; -moz-appearance: textfield;">
+            <button type="submit" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="btn-cant" style="background: none; border: none; color: var(--texto2); width: 30px; height: 100%; cursor: pointer; font-weight: bold;">+</button>
+          </form>
+        </div>
+
+        <!-- Precios -->
+        <div style="text-align: right; min-width: 100px;">
+          <div style="font-weight: bold; font-size: 1.1rem; color: var(--texto);">${{ item.subtotal|floatformat:0 }}</div>
+          <div style="font-size: 0.76rem; color: var(--texto2);">${{ item.producto.precio|floatformat:0 }} c/u</div>
+        </div>
+
+        <!-- Eliminar -->
+        <div>
+          <a href="{% url 'eliminar_del_carrito' item.producto.pk %}" style="color: var(--acento); font-size: 1.1rem; padding: 0.5rem; display: inline-block;" title="Quitar del carrito">🗑️</a>
+        </div>
+      </div>
+      {% endfor %}
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+        <a href="{% url 'catalogo' %}" class="btn btn-outline" style="font-size: 0.85rem;">← Seguir comprando</a>
+      </div>
+    </div>
+
+    <!-- RESUMEN DE LA COMPRA -->
+    <div class="carrito-resumen" style="background: var(--bg2); border: 1px solid var(--borde); border-radius: var(--radius); padding: 1.8rem; display: flex; flex-direction: column; gap: 1.2rem;">
+      <h2 style="font-family: 'Barlow', sans-serif; font-size: 1.3rem; font-weight: 700; border-bottom: 1px solid var(--borde); padding-bottom: 0.8rem; margin-bottom: 0.5rem;">Resumen</h2>
+      
+      <div style="display: flex; justify-content: space-between; font-size: 0.92rem; color: var(--texto2);">
+        <span>Subtotal</span>
+        <span>${{ total|floatformat:0 }}</span>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; font-size: 0.92rem; color: var(--texto2);">
+        <span>Envío</span>
+        <span style="color: #27ae60; font-weight: 500;">Gratis</span>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 700; border-top: 1px solid var(--borde); padding-top: 1rem; margin-top: 0.5rem;">
+        <span>Total</span>
+        <span style="color: var(--texto);">${{ total|floatformat:0 }}</span>
+      </div>
+
+      {% if user.is_authenticated %}
+        <form method="post" action="{% url 'confirmar_compra' %}" style="margin-top: 0.8rem;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary btn-full" style="padding: 12px; font-size: 1rem; font-weight: 700;">
+            Proceder al Pago
+          </button>
+        </form>
+      {% else %}
+        <div style="background: rgba(196,18,48,0.05); border: 1px solid rgba(196,18,48,0.2); border-radius: 6px; padding: 0.8rem; font-size: 0.82rem; text-align: center; color: #e05252; margin-top: 0.8rem;">
+          Debes <a href="{% url 'login' %}?next={% url 'ver_carrito' %}" style="font-weight: 600; text-decoration: underline; color: var(--acento);">iniciar sesión</a> para completar tu compra.
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+  {% else %}
+  <div class="vacio" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 1rem;">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">🛒</div>
+    <h2 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--texto);">Tu carrito está vacío</h2>
+    <p style="color: var(--texto2); margin-bottom: 1.5rem; font-size: 0.9rem;">Agrega productos desde nuestro catálogo para comenzar a comprar.</p>
+    <a href="{% url 'catalogo' %}" class="btn btn-primary">Ver catálogo</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

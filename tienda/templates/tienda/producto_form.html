@@ -1,0 +1,38 @@
+{% extends 'tienda/base.html' %}
+{% block titulo %}{{ titulo }} — Games Addiction{% endblock %}
+
+{% block contenido %}
+<div class="auth-wrap" style="min-height: calc(100vh - 120px); display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem;">
+  <div class="auth-card" style="background: var(--bg2); border: 1px solid var(--borde); border-radius: 10px; padding: 2.2rem; width: 100%; max-width: 600px;">
+    <h1 class="auth-titulo" style="font-family: 'Barlow', sans-serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 0.2rem;">{{ titulo }}</h1>
+    <p class="auth-sub" style="color: var(--texto2); font-size: 0.85rem; margin-bottom: 1.8rem;">Gestión del catálogo de productos de la tienda</p>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group" style="margin-bottom: 1.2rem;">
+        <label for="{{ field.id_for_label }}" style="display: block; font-size: 0.82rem; font-weight: 500; color: var(--texto2); margin-bottom: 4px;">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <p class="form-help" style="color: #555; font-size: 0.76rem; margin-top: 3px;">{{ field.help_text }}</p>
+        {% endif %}
+        {% if field.errors %}
+          {% for error in field.errors %}
+            <p class="form-error" style="color: #e05252; font-size: 0.78rem; margin-top: 3px;">{{ error }}</p>
+          {% endfor %}
+        {% endif %}
+      </div>
+      {% endfor %}
+      
+      <div style="display: flex; gap: 0.8rem; margin-top: 2rem;">
+        <button type="submit" class="btn btn-primary" style="flex: 2; height: 42px; display: flex; align-items: center; justify-content: center;">
+          Guardar Producto
+        </button>
+        <a href="{% url 'perfil' %}" class="btn btn-outline" style="flex: 1; text-align: center; display: flex; align-items: center; justify-content: center; height: 42px;">
+          Cancelar
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

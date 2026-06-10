@@ -6,7 +6,7 @@ PASOS A SEGUIR:
 
 2- .venv/Scripts/activate       
 
-3- pip install -r requirements.txt
+3- pip install django
 
 4- python manage.py migrate
 
